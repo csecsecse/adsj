@@ -1,94 +1,157 @@
-class BSTNode {
-    String key;
-    Integer value;
-    BSTNode left, right;
+class Node {
+    int key;
+    Node left, right;
 
-    public BSTNode(String key, Integer value) {
-        this.key = key;
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    public Node(int item) {
+        key = item;
+        left = right = null;
     }
 }
 
-class BinarySearchTree {
-    private BSTNode root;
+public class BinarySearchTree {
+    Node root;
 
-    public BinarySearchTree() {
-        this.root = null;
+    BinarySearchTree() {
+        root = null;
     }
 
-    // Insert a key-value pair into the BST
-    public void insert(String key, Integer value) {
-        root = insertRec(root, key, value);
+    // Insert a key into the BST
+    void insert(int key) {
+        root = insertRec(root, key);
     }
 
-    private BSTNode insertRec(BSTNode root, String key, Integer value) {
+    Node insertRec(Node root, int key) {
         if (root == null) {
-            root = new BSTNode(key, value);
+            root = new Node(key);
             return root;
         }
-        if (key.compareTo(root.key) < 0) {
-            root.left = insertRec(root.left, key, value);
-        } else if (key.compareTo(root.key) > 0) {
-            root.right = insertRec(root.right, key, value);
-        }
+
+        if (key < root.key)
+            root.left = insertRec(root.left, key);
+        else if (key > root.key)
+            root.right = insertRec(root.right, key);
+
         return root;
     }
 
+    // Delete a key from the BST
+    void deleteKey(int key) {
+        root = deleteRec(root, key);
+    }
+
+    Node deleteRec(Node root, int key) {
+        if (root == null)
+            return root;
+
+        if (key < root.key)
+            root.left = deleteRec(root.left, key);
+        else if (key > root.key)
+            root.right = deleteRec(root.right, key);
+        else {
+            if (root.left == null)
+                return root.right;
+            else if (root.right == null)
+                return root.left;
+
+            root.key = minValue(root.right);
+
+            root.right = deleteRec(root.right, root.key);
+        }
+
+        return root;
+    }
+
+    int minValue(Node root) {
+        int minValue = root.key;
+        while (root.left != null) {
+            minValue = root.left.key;
+            root = root.left;
+        }
+        return minValue;
+    }
+
+    // Search for a key in the BST
+    Node search(Node root, int key) {
+        if (root == null || root.key == key)
+            return root;
+
+        if (root.key > key)
+            return search(root.left, key);
+
+        return search(root.right, key);
+    }
+
     // In-order traversal of the BST
-    public void inorder() {
+    void inorder() {
         inorderRec(root);
     }
 
-    private void inorderRec(BSTNode root) {
+    void inorderRec(Node root) {
         if (root != null) {
             inorderRec(root.left);
-            System.out.println(root.key + ": " + root.value);
+            System.out.print(root.key + " ");
             inorderRec(root.right);
         }
     }
 
-    // Search for a key in the BST
-    public Integer search(String key) {
-        BSTNode result = searchRec(root, key);
-        return result != null ? result.value : null;
+    // Pre-order traversal of the BST
+    void preorder() {
+        preorderRec(root);
     }
 
-    private BSTNode searchRec(BSTNode root, String key) {
-        if (root == null || root.key.equals(key)) {
-            return root;
+    void preorderRec(Node root) {
+        if (root != null) {
+            System.out.print(root.key + " ");
+            preorderRec(root.left);
+            preorderRec(root.right);
         }
-        if (key.compareTo(root.key) < 0) {
-            return searchRec(root.left, key);
-        }
-        return searchRec(root.right, key);
     }
-}
 
-public class Main {
+    // Post-order traversal of the BST
+    void postorder() {
+        postorderRec(root);
+    }
+
+    void postorderRec(Node root) {
+        if (root != null) {
+            postorderRec(root.left);
+            postorderRec(root.right);
+            System.out.print(root.key + " ");
+        }
+    }
+
     public static void main(String[] args) {
         BinarySearchTree bst = new BinarySearchTree();
 
-        // Insert key-value pairs into the BST
-        bst.insert("apple", 10);
-        bst.insert("banana", 20);
-        bst.insert("cherry", 30);
-        bst.insert("date", 40);
-        bst.insert("fig", 50);
-        bst.insert("grape", 60);
-        bst.insert("kiwi", 70);
-        bst.insert("lemon", 80);
-        bst.insert("mango", 90);
+        bst.insert(50);
+        bst.insert(30);
+        bst.insert(20);
+        bst.insert(40);
+        bst.insert(70);
+        bst.insert(60);
+        bst.insert(80);
 
-        // Display the BST in sorted order
-        System.out.println("In-order traversal of the BST:");
+        System.out.println("Inorder traversal:");
         bst.inorder();
+        System.out.println();
 
-        // Search for specific keys
-        System.out.println("\nSearch results:");
-        System.out.println("Search for 'banana': " + bst.search("banana"));
-        System.out.println("Search for 'kiwi': " + bst.search("kiwi"));
-        System.out.println("Search for 'orange': " + bst.search("orange"));
+        System.out.println("Delete 20:");
+        bst.deleteKey(20);
+        System.out.println("Inorder traversal:");
+        bst.inorder();
+        System.out.println();
+
+        System.out.println("Delete 30:");
+        bst.deleteKey(30);
+        System.out.println("Inorder traversal:");
+        bst.inorder();
+        System.out.println();
+
+        System.out.println("Search 50:");
+        Node result = bst.search(bst.root, 50);
+        if (result != null)
+            System.out.println("Found: " + result.key);
+        else
+            System.out.println("Not found");
     }
 }
