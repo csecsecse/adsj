@@ -1,3 +1,21 @@
+public class Product {
+    int id; String name, type;
+    float price, rating;
+    public Product(int a, String b, float c, String d, float e) {
+        id = a; name = b; price = c; type = d; rating = e;
+    }
+    public int getId() { return id; }
+    public void setId(int a) { id = a; }
+    public String getName() { return name; }
+    public void setName(String a) { name = a; }
+    public float getPrice() { return price; }
+    public void setPrice(float a) { price = a; }
+    public String getType() { return type; }
+    public void setType(String a) { type = a; }
+    public float getRating() { return rating; }
+    public void setRating(float a) { rating = a; }
+}
+
 public class ProductOperations {
 
     public static void main(String[] args) {
